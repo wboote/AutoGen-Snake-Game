@@ -35,7 +35,7 @@ runner = UserProxyAgent(
 app_designer = AssistantAgent(
     name="Application_Designer",
     llm_config=gpt4_config,
-    system_message="Application Designer: Write and save a program that recursively searches .java files for session.createCriteria() calls.  For these calls, copy the code block until session.list() is called.  Pass the copied code block to the openai gpt-4 rest api and get it to convert the Hibernate native code block to JPA compatible.  Save the resultant converted code block., ensuring all details are documented in 'app_design.txt'. Collaborate with the Runner to align the design with feedback and expectations."
+    system_message="Application Designer: Write and save a program in python that recursively searches .java files for session.createCriteria() calls.  For these calls, copy the code block until session.list() is called.  Pass the copied code block to the openai gpt-4 rest api and get it to convert the Hibernate native code block to JPA compatible.  Save the resultant converted code block., ensuring all details are documented in 'app_design.txt'. Collaborate with the Runner to align the design with feedback and expectations."
 )
 
 # Initialize the Programmer agent, responsible for coding the application
@@ -84,5 +84,5 @@ manager = GroupChatManager(groupchat=groupchat, llm_config=gpt4_config)
 # Start the conversation with the Runner's message
 runner.initiate_chat(
     manager,
-    message="Let's design, implement and save a program that converts .java Hibernate native codeblocks to JPA compatible. I aim for it to be challenging."
+    message="Let's design, implement and save a python program that converts .java Hibernate native codeblocks to JPA compatible. I aim for it to be challenging."
 )
