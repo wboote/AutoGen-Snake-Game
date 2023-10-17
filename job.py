@@ -35,7 +35,7 @@ runner = UserProxyAgent(
 app_designer = AssistantAgent(
     name="Application_Designer",
     llm_config=gpt4_config,
-    system_message="Application Designer: Write and save a python program that recursively searches .java files for createCriteria() calls.  For these calls, copy the code block until criteria.list() is called.  Pass the copied code block to the openai gpt-4 rest api and get it to convert the Hibernate native code block to JPA compatible.  Save the resultant converted code block., ensuring all details are documented in 'app_design.txt'. Collaborate with the Runner to align the design with feedback and expectations."
+    system_message="Application Designer: Write and save a program that recursively searches .java files for session.createCriteria() calls.  For these calls, copy the code block until session.list() is called.  Pass the copied code block to the openai gpt-4 rest api and get it to convert the Hibernate native code block to JPA compatible.  Save the resultant converted code block., ensuring all details are documented in 'app_design.txt'. Collaborate with the Runner to align the design with feedback and expectations."
 )
 
 # Initialize the Programmer agent, responsible for coding the application
@@ -55,7 +55,7 @@ app_tester = UserProxyAgent(
         "timeout": 120,
         "last_n_messages": 3,
     },
-    human_input_mode="NEVER",
+    human_input_mode="ALWAYS",
 )
 
 # Initialize the Code Executor agent, responsible for executing the application code
