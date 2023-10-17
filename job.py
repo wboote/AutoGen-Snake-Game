@@ -17,12 +17,12 @@ gpt4_config = {
 }
 
 # Define the common working directory for all agents
-working_directory = "game_files"
+working_directory = "job_files"
 
-# Initialize the Player agent, responsible for providing gameplay feedback
-player = UserProxyAgent(
-    name="Player",
-    system_message="Player: Your role is to provide feedback on the gameplay. Collaborate with the Game Designer to ensure the game meets desired expectations.",
+# Initialize the Applicatoin Runner agent, responsible for providing feedback on running the application
+runner = UserProxyAgent(
+    name="Application Runner",
+    system_message="Player: Your role is to provide feedback on running the application. Collaborate with the Application Designer to ensure the application meets desired expectations.",
     code_execution_config={
         "work_dir": working_directory,
         "use_docker": False,
@@ -31,24 +31,24 @@ player = UserProxyAgent(
     },
 )
 
-# Initialize the Game Designer agent, responsible for designing the game
-game_designer = AssistantAgent(
-    name="Game_Designer",
+# Initialize the Application Designer agent, responsible for designing the application
+app_designer = AssistantAgent(
+    name="Application_Designer",
     llm_config=gpt4_config,
-    system_message="Game Designer: Write a program that recursively searches .java files for session.createCriteria() calls.  For these calls, copy the code block until session.list() is called.  Pass the copied code block to the openai gpt-4 rest api and get it to convert the Hibernate native code block to JPA compatible.  Save the resultant converted code block., ensuring all details are documented in 'game_design.txt'. Collaborate with the Player to align the design with feedback and expectations."
+    system_message="Application Designer: Write a program that recursively searches .java files for session.createCriteria() calls.  For these calls, copy the code block until session.list() is called.  Pass the copied code block to the openai gpt-4 rest api and get it to convert the Hibernate native code block to JPA compatible.  Save the resultant converted code block., ensuring all details are documented in 'app_design.txt'. Collaborate with the Player to align the design with feedback and expectations."
 )
 
-# Initialize the Programmer agent, responsible for coding the game
+# Initialize the Programmer agent, responsible for coding the application
 programmer = AssistantAgent(
     name="Programmer",
     llm_config=gpt4_config,
-    system_message="Programmer: Code the snake game and save it in the working directory. For code execution, collaborate with the Code Executor. If feedback is needed, consult the Game Tester."
+    system_message="Programmer: Code the application and save it in the working directory. For code execution, collaborate with the Code Executor. If feedback is needed, consult the Application Tester."
 )
 
-# Initialize the Game Tester agent, responsible for playtesting the game
-game_tester = UserProxyAgent(
-    name="Game_Tester",
-    system_message="Game Tester: Playtest the game and provide feedback on gameplay mechanics and user experience. Report any bugs or glitches. Collaborate with the Programmer for any necessary adjustments.",
+# Initialize the Application Tester agent, responsible for testing the application
+app_tester = UserProxyAgent(
+    name="Application_Tester",
+    system_message="Application Tester: Test the application and provide feedback on application mechanics and user experience. Report any bugs or glitches. Collaborate with the Programmer for any necessary adjustments.",
     code_execution_config={
         "work_dir": working_directory,
         "use_docker": False,
@@ -58,7 +58,7 @@ game_tester = UserProxyAgent(
     human_input_mode="ALWAYS",
 )
 
-# Initialize the Code Executor agent, responsible for executing the game code
+# Initialize the Code Executor agent, responsible for executing the application code
 code_executor = UserProxyAgent(
     name="Code_Executor",
     system_message="Code Executor: Execute the provided code from the Programmer in the designated environment. Report outcomes and potential issues. Ensure the code follows best practices and recommend enhancements to the Programmer.",
@@ -73,7 +73,7 @@ code_executor = UserProxyAgent(
 
 # Set up the group chat with all the agents
 groupchat = GroupChat(
-    agents=[player, game_tester, game_designer, programmer, code_executor],
+    agents=[runner, app_tester, app_designer, programmer, code_executor],
     messages=[],
     max_round=150
 )
@@ -84,5 +84,5 @@ manager = GroupChatManager(groupchat=groupchat, llm_config=gpt4_config)
 # Start the conversation with the Player's message
 player.initiate_chat(
     manager,
-    message="Let's design and implement a snake game. I aim for it to be entertaining and challenging."
+    message="Let's design and implement a program that converts .java Hibernate native codeblocks to JPA compatible. I aim for it to be challenging."
 )
